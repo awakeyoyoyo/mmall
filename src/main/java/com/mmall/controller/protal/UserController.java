@@ -40,7 +40,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session){
         session.removeAttribute(Const.CURRENT_USER);
-        return ServerResponse.createBySuccess();
+        return ServerResponse.createBySuccessMessage("退出登陆成功");
     }
 
     @RequestMapping(value = "register.do",method = RequestMethod.POST)

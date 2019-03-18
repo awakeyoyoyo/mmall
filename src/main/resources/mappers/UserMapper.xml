@@ -157,7 +157,7 @@
   </select>
   <select id="checkEmail" resultType="int" parameterType="String">
     SELECT COUNT(1) from mmall_user
-    WHERE eamil=#{email}
+    WHERE email=#{email}
   </select>
   <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
     SELECT
@@ -167,7 +167,7 @@
   </select>
 
   <select id="selectQuestionByUsername" resultType="string" parameterType="String">
-  SELECT queston from mmall_user
+  SELECT question from mmall_user
   WHERE username=#{username}
   </select>
 
@@ -180,10 +180,10 @@
     UPDATE  mmall_user
     SET  password=#{passwordNew},update_time=now()
     WHERE username=#{username}
+    SELECT  COUNT(1)
   </update>
 
   <select id="checkPassword" parameterType="map" resultType="int">
-    SELECT  COUNT(1)
     FROM mmall_user
     WHERE  id=#{userId}
     AND password=#{password}
@@ -191,7 +191,7 @@
   
   <select id="checkEmailByUserId" resultType="int" parameterType="map">
     SELECT COUNT(1) from mmall_user
-    WHERE eamil=#{email}
+    WHERE email=#{email}
     AND id!=#{userId}
   </select>
 </mapper>
