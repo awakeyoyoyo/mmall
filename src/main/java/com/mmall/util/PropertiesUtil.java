@@ -16,7 +16,8 @@ public class PropertiesUtil {
     private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
     private static Properties props;
-
+    //静态代码块优于普通代码块优于构造代码块
+    //静态代码块只执行一次，在类被加载得时候执行，通常用于类初始化
     static {
         String fileName = "mmall.properties";
         props = new Properties();
@@ -36,7 +37,6 @@ public class PropertiesUtil {
     }
 
     public static String getProperty(String key,String defaultValue){
-
         String value = props.getProperty(key.trim());
         if(StringUtils.isBlank(value)){
             value = defaultValue;
