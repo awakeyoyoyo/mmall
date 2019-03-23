@@ -5,6 +5,7 @@ import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
 import com.mmall.vo.ProductDetailVo;
+import org.omg.PortableInterceptor.INACTIVE;
 
 public interface IProductService {
     ServerResponse saveOrUpdateProduct(Product product);
@@ -16,4 +17,8 @@ public interface IProductService {
     ServerResponse<PageInfo> getProductList(int pageNum, int pageSize);
 
     ServerResponse<PageInfo> searchProdct(String productName,Integer productId,int pageNum, int pageSize);
+
+    ServerResponse<ProductDetailVo> getProductDetail(Integer productId);
+
+    ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId,int pageNum,int pageSize,String orderBy);
 }

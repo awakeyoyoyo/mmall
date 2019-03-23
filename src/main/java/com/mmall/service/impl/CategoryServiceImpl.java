@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categoryList);
     }
     //递归查询本节点的id以及孩子节点的id
-    public  ServerResponse selectCategoryAndChildrenById(Integer categoryId){
+    public  ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
         Set<Category> categorySet = Sets.newHashSet();
         //通过外部生成一个set 递归方法里面向里面添加i
         findChildCategory(categorySet,categoryId);
