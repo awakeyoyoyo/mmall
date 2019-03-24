@@ -52,7 +52,7 @@ public class CartController {
         return iCartService.update(user.getId(), productId, count);
     }
 
-    @RequestMapping("delete.do")
+    @RequestMapping("delete_product.do")
     @ResponseBody
     public ServerResponse<CartVo> deledteProduct(HttpSession session, String productIds) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);

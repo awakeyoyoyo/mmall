@@ -180,10 +180,10 @@
     UPDATE  mmall_user
     SET  password=#{passwordNew},update_time=now()
     WHERE username=#{username}
-    SELECT  COUNT(1)
   </update>
 
   <select id="checkPassword" parameterType="map" resultType="int">
+    SELECT  COUNT(1)
     FROM mmall_user
     WHERE  id=#{userId}
     AND password=#{password}

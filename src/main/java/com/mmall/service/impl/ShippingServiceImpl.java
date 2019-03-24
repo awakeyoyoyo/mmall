@@ -1,5 +1,7 @@
 package com.mmall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.ShippingMapper;
@@ -8,6 +10,7 @@ import com.mmall.service.IShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service("iShippingService")
@@ -35,5 +38,35 @@ public class ShippingServiceImpl implements IShippingService {
         }
         return ServerResponse.createByErrorMessage("删除地址失败");
 
+    }
+
+    @Override
+    public ServerResponse update(Integer userId, Shipping shipping) {
+        shipping.setUserId(userId);
+        int rowCount=shippingMapper.updateByShipping(shipping);//keyProperty="id" 将自增的id 自动导入到shipping对象里
+        if (rowCount>0){
+
+            return ServerResponse.createBySuccess("更新地址成功");
+        }
+        return ServerResponse.createByErrorMessage("更新地址失败");
+    }
+
+    @Override
+    public ServerResponse<Shipping> select(Integer userId, Integer shippingId) {
+        Shipping shipping=shippingMapper.selectByShippingIdUserId(userId, shippingId);
+        if (shipping==null){
+            return ServerResponse.createByErrorMessage("无法查询到该地址");
+        }
+        else {
+           return ServerResponse.createBySuccess("查询地址成功",shipping);
+        }
+    }
+
+    @Override
+    public ServerResponse<PageInfo> list(Integer userId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Shipping> shippingList=shippingMapper.selectByUserId(userId);
+        PageInfo pageInfo=new PageInfo(shippingList);
+        return ServerResponse.createBySuccess(pageInfo);
     }
 }
