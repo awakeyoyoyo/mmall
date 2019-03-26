@@ -223,7 +223,7 @@
             </dependency>
           </dependencies>
         </plugin>
-
+        <!--maven插件，打包jar包 本地jar包发布到服务器上-->
            <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
