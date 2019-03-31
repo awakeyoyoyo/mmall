@@ -27,7 +27,7 @@ public class OrderController {
     @Autowired
     private IOrderService iOrderService;
     private  static  final Logger logger= LoggerFactory.getLogger(OrderController.class);
-    @RequestMapping("pay.dpo")
+    @RequestMapping("pay.do")
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -39,7 +39,7 @@ public class OrderController {
     }
     @RequestMapping("alipay_callback.do")
     @ResponseBody
-    public  Object alipayCallBack(HttpServletRequest request){
+    public  Object alipayCallback(HttpServletRequest request){
         Map<String,String> params= Maps.newHashMap();
        Map requesrParms= request.getParameterMap();
        for (Iterator iterator=requesrParms.keySet().iterator();iterator.hasNext();){
@@ -66,6 +66,27 @@ public class OrderController {
         }
 
         //todo 验证各种数据
-    return null;
+        ServerResponse serverResponse=iOrderService.aliCallback(params);
+        if (serverResponse.isSuccess()){
+            return  Const.AlipayCallback.RESPONSE_SUCCESS;
+        }
+        else {
+            return  Const.AlipayCallback.RESPONSE_FAILED;
+        }
+    }
+
+    //前台查询状态
+    @RequestMapping("query_orde_pay_status.do")
+    @ResponseBody
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+       ServerResponse serverResponse=iOrderService.queryOrderPayStatus(user.getId(),orderNo);
+        if (serverResponse.isSuccess()){
+            return ServerResponse.createBySuccess(true);
+        }
+        return ServerResponse.createBySuccess(false);
     }
 }
