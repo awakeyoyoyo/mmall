@@ -17,7 +17,11 @@ public class DateTimeUtil {
         DateTime dateTime=dateTimeFormatter.parseDateTime(dateTimeStr);
         return dateTime.toDate();
     }
-
+    public  static Date strToDate(String dateTimeStr){
+        DateTimeFormatter dateTimeFormatter= DateTimeFormat.forPattern(DateTimeUtil.STANDARD_FORMAT);
+        DateTime dateTime=dateTimeFormatter.parseDateTime(dateTimeStr);
+        return dateTime.toDate();
+    }
     public static String dateToStr(Date date){
         if (date==null){
             return StringUtils.EMPTY;
