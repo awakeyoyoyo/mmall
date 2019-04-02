@@ -10,6 +10,8 @@ import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mmall.common.Const;
@@ -35,10 +37,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Service("iOrderService")
@@ -222,11 +221,14 @@ public class OrderServiceImpl implements IOrderService {
         List<Cart> cartList=cartMapper.selectCheckedCartByUserId(userId);
        //计算这个订单的总价
         ServerResponse serverResponse=this.getCartOrderItem(userId,cartList);
-        if (serverResponse.isSuccess()){
+        if (!serverResponse.isSuccess()){
             return serverResponse;
         }
+
         List<OrderItem> orderItemList=(List<OrderItem>)serverResponse.getData();
+
         BigDecimal payment=this.getOrderTotalPrice(orderItemList);
+        //orderItemList空异常
         //生成订单
         Order order=this.assembleOrder(userId,shippingId,payment);
         if (order==null){
@@ -291,6 +293,92 @@ public class OrderServiceImpl implements IOrderService {
        return ServerResponse.createBySuccess(orderProductVo);
     }
 
+    @Override
+    public ServerResponse<OrderVo> getOrderDetail(Integer userId, Long orderNo) {
+       Order order=orderMapper.selectByUserIdAndOrderNo(userId,orderNo);
+       if (order!=null){
+           List<OrderItem> orderItemList=orderItemMapper.getByOrderNoUserId(orderNo, userId);
+           OrderVo orderVo=assembleOrderVo(order,orderItemList);
+           return ServerResponse.createBySuccess(orderVo);
+       }
+       return ServerResponse.createByErrorMessage("没有找到该订单");
+    }
+
+    @Override
+    public ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList=orderMapper.selectByUserId(userId);
+        List<OrderVo> orderVoList=assembleOrderVolist(orderList,userId);
+        PageInfo pageResult=new PageInfo(orderList);
+        pageResult.setList(orderVoList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ServerResponse<PageInfo> manageList(int pageNum, int pageSize) {
+       PageHelper.startPage(pageNum, pageSize);
+       List<Order> orderList =orderMapper.selectAll();
+       List<OrderVo> orderVoList=this.assembleOrderVolist(orderList,null);
+       PageInfo pageResult=new PageInfo(orderList);
+       pageResult.setList(orderVoList);
+       return ServerResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ServerResponse<OrderVo> manageDetail(Long orderNo) {
+       Order order=orderMapper.selectByOrderNo(orderNo);
+       if (order!=null){
+            List<OrderItem> orderItemList=orderItemMapper.getByOrderNo(orderNo);
+            OrderVo orderVo=assembleOrderVo(order,orderItemList);
+           return ServerResponse.createBySuccess(orderVo);
+       }
+       return ServerResponse.createByErrorMessage("订单不存在");
+    }
+
+    @Override
+    public ServerResponse<PageInfo> manageSearch(Long orderNo,int pageNum,int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        Order order=orderMapper.selectByOrderNo(orderNo);
+        if (order!=null){
+            List<OrderItem> orderItemList=orderItemMapper.getByOrderNo(orderNo);
+            OrderVo orderVo=assembleOrderVo(order,orderItemList);
+            PageInfo pageResult=new PageInfo(Lists.newArrayList(order));
+            pageResult.setList(Lists.newArrayList(orderVo));
+            return ServerResponse.createBySuccess(pageResult);
+        }
+        return ServerResponse.createByErrorMessage("订单不存在");
+    }
+
+    @Override
+    public ServerResponse<String> manageSendGoods(Long orderNo) {
+        Order order=orderMapper.selectByOrderNo(orderNo);
+        if (order!=null){
+           if (order.getStatus()==Const.OrderStatusEnum.PAID.getCode()){
+               order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+               order.setSendTime(new Date());
+               orderMapper.updateByPrimaryKeySelective(order);
+               return ServerResponse.createBySuccess("发货成功");
+           }
+        }
+        return ServerResponse.createByErrorMessage("订单不存在");
+    }
+
+    private List<OrderVo> assembleOrderVolist(List<Order> orderlist,Integer userId){
+        List<OrderVo> orderVoList=Lists.newArrayList();
+        for (Order order:orderlist){
+            List<OrderItem> orderItemList=Lists.newArrayList();
+            if (userId==null){
+               orderItemList=orderItemMapper.getByOrderNo(order.getOrderNo());
+            }
+            else {
+                orderItemList = orderItemMapper.getByOrderNoUserId(order.getOrderNo(), userId);
+            }
+            OrderVo orderVo=assembleOrderVo(order,orderItemList);
+            orderVoList.add(orderVo);
+        }
+        return  orderVoList;
+    }
+
     private OrderVo assembleOrderVo(Order order,List<OrderItem> orderItemList){
         OrderVo orderVo=new OrderVo();
         orderVo.setOrderNo(order.getOrderNo());
@@ -299,7 +387,7 @@ public class OrderServiceImpl implements IOrderService {
         orderVo.setPaymentTypeDesc(Const.PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
         orderVo.setPostage(order.getPostage());
         orderVo.setStatus(order.getStatus());
-        orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getPaymentType()).getValue());
+        orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
         orderVo.setShippingId(order.getShippingId());
         Shipping shipping=shippingMapper.selectByPrimaryKey(order.getShippingId());
         if (shipping!=null){
