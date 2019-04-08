@@ -31,7 +31,7 @@ public class CartServiceImpl implements ICartService {
     public ServerResponse<CartVo> add(Integer userId,Integer productId,Integer count){
         if (productId==null||count==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+                    ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Cart cart= cartMapper.selectCartByUserIdProductId(userId, productId);
         if (cart==null){
@@ -86,7 +86,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public ServerResponse<CartVo> selectOrUnSelect(Integer userId,Integer checked,Integer productId) {
-       cartMapper.checkOrUncheckedProduct(userId,checked, productId);
+       cartMapper.checkOrUncheckedProduct(userId,checked,productId);
        return this.list(userId);
     }
 
