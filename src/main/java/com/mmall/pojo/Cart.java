@@ -1,8 +1,13 @@
 package com.mmall.pojo;
 
-import java.util.Date;
+import lombok.*;
 
-public class Cart {
+import java.util.Date;
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//@AllArgsConstructor
+public class  Cart {
     private Integer id;
 
     private Integer userId;
@@ -26,9 +31,8 @@ public class Cart {
         this.createTime = createTime;
         this.updateTime = updateTime;
     }
+    public Cart(){
 
-    public Cart() {
-        super();
     }
 
     public Integer getId() {
