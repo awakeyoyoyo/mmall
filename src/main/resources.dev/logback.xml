@@ -23,7 +23,7 @@
         如果上级目录不存在会自动创建，没有默认值。-->
         <File>D:/mmalllog/mmall.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:/mmalllog/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <FileNamePattern>D:/mmalllog/mmall.log.%d{yyyy-MM-dd}.gz</FileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -38,8 +38,8 @@
         <!--<File>d:/mmalllog/error.log</File>-->
         <File>D:/mmalllog/error.log</File>
         <!--活动文件的名字会根据fileNamePattern 的值，每隔一段时间改变一次-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy .%d{yyyy-MM-dd及每天一次 ">
-            <fileNamePattern>D:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>D:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</FileNamePattern>
             <!--<fileNamePattern>d:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
             <append>true</append>
             <!--保留10天的记录-->
@@ -65,7 +65,7 @@
 
     <!-- geelynote mybatis log 日志 -->
 
-    <logger name="com.mmall.dao" level="DEBUG"/>
+    <logger name="com.mmall.dao" level="DEBUG"></logger>
 
     <!--<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" >-->
     <!--<appender-ref ref="console"/>-->
