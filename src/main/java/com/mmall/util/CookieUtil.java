@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class CookieUtil {
-    private final static String COOKIE_DOMAIN=".awakeyoyoyo.com";
+    private final static String COOKIE_DOMAIN="awakeyoyoyo.com";
     private final static String COOKIE_NAME="mmall_login_token";
-    private static  String readLoginToken(HttpServletRequest request){
+    public static  String readLoginToken(HttpServletRequest request){
         Cookie[] cks=request.getCookies();
         if (cks!=null){
             for (Cookie ck:cks){
@@ -42,6 +42,7 @@ public class CookieUtil {
                 if (StringUtils.equals(ck.getName(),COOKIE_NAME)){
                     ck.setDomain(COOKIE_DOMAIN);
                     ck.setPath("/");
+                    ck.setHttpOnly(true); //不允许脚本读取cookie
                     ck.setMaxAge(0);
                     log.info("del cookieName:{},cookieValue:{}",ck.getName(),ck.getValue());
                     response.addCookie(ck);
