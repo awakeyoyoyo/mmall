@@ -3,7 +3,6 @@ package com.mmall.pojo;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +22,7 @@ public class Category {
     private Date createTime;
 
     private Date updateTime;
+
 
 
 
