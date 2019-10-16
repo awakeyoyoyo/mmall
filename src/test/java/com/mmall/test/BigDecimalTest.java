@@ -24,4 +24,17 @@ public class BigDecimalTest {
         BigDecimal b2=new BigDecimal("0.01");
         System.out.println(b1.add(b2));
     }
+    @Test
+    public void test4(){
+        String s1 = new String("key");
+        String s2 = new String("key");
+        String s3 ="ABC";
+        String s4 ="ABC";
+        System.out.println("s1.equals(s2):"+s1.equals(s2));
+        System.out.println("s1.equals(s3):"+s1.equals(s3));
+        System.out.println("s3.equals(s4):"+s3.equals(s4));
+        System.out.println(s1==s2);
+        System.out.println(s1==s3);
+        System.out.println(s3==s4);
+    }
 }
